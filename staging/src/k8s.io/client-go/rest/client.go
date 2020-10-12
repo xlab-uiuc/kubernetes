@@ -17,6 +17,7 @@ limitations under the License.
 package rest
 
 import (
+	"fmt"
 	"net/http"
 	"net/url"
 	"os"
@@ -188,6 +189,8 @@ func (c *RESTClient) Get() *Request {
 
 // Delete begins a DELETE request. Short for c.Verb("DELETE").
 func (c *RESTClient) Delete() *Request {
+	fmt.Println(*(c.base))
+	fmt.Println(c.versionedAPIPath)
 	return c.Verb("DELETE")
 }
 

@@ -18,6 +18,7 @@ package resource
 
 import (
 	"context"
+	"fmt"
 	"strconv"
 
 	"k8s.io/apimachinery/pkg/api/meta"
@@ -120,7 +121,9 @@ func (m *Helper) DeleteWithOptions(namespace, name string, options *metav1.Delet
 	if m.ServerDryRun {
 		options.DryRun = []string{metav1.DryRunAll}
 	}
-
+	fmt.Println("[stale-read] DeleteWithOptions")
+	fmt.Printf("namespace: %s, name: %s, resource: %s\n", namespace, name, m.Resource)
+	fmt.Printf("m.RESTClient: %v\n", m.RESTClient)
 	return m.RESTClient.Delete().
 		NamespaceIfScoped(namespace, m.NamespaceScoped).
 		Resource(m.Resource).
