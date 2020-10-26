@@ -499,6 +499,7 @@ func (sched *Scheduler) bind(ctx context.Context, prof *profile.Profile, assumed
 		sched.finishBinding(prof, assumed, targetNode, start, err)
 	}()
 
+	cache.SRSend("localhost:1234", targetNode)
 	bound, err := sched.extendersBinding(assumed, targetNode)
 	if bound {
 		return err
@@ -546,7 +547,6 @@ func (sched *Scheduler) finishBinding(prof *profile.Profile, assumed *v1.Pod, ta
 
 // scheduleOne does the entire scheduling workflow for a single pod.  It is serialized on the scheduling algorithm's host fitting.
 func (sched *Scheduler) scheduleOne(ctx context.Context) {
-	cache.SRSend("localhost:1234", "[stale-read] Hello")
 	podInfo := sched.NextPod()
 	// pod could be nil when schedulerQueue is closed
 	if podInfo == nil || podInfo.Pod == nil {

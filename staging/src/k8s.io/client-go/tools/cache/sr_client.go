@@ -1,7 +1,6 @@
 package cache
 
 import (
-	"bufio"
 	"fmt"
 	"net"
 
@@ -17,6 +16,6 @@ func SRSend(hostPort string, text string) {
 	}
 	klog.Warningf("[SR] send %s to %s", text, hostPort)
 	fmt.Fprintf(c, text+"\n")
-	message, _ := bufio.NewReader(c).ReadString('\n')
-	fmt.Print("[SR] hear back: " + message)
+	// message, _ := bufio.NewReader(c).ReadString('\n')
+	// fmt.Print("[SR] hear back: " + message)
 }
