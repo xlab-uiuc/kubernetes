@@ -18,5 +18,5 @@ func SRSend(hostPort string, text string) {
 	klog.Warningf("[SR] send %s to %s", text, hostPort)
 	fmt.Fprintf(c, text+"\n")
 	message, _ := bufio.NewReader(c).ReadString('\n')
-	fmt.Print("[SR] hear back: " + message)
+	klog.Warningf("[SR] hear back: %s", message)
 }
