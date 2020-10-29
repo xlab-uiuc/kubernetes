@@ -12,7 +12,7 @@ import (
 func SRSend(hostPort string, text string) {
 	c, err := net.Dial("tcp", hostPort)
 	if err != nil {
-		fmt.Println(err)
+		klog.Errorf("[SR] failed to connect to SRServer: %v", err)
 		return
 	}
 	klog.Warningf("[SR] send %s to %s", text, hostPort)
