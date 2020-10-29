@@ -499,6 +499,7 @@ func (sched *Scheduler) bind(ctx context.Context, prof *profile.Profile, assumed
 		sched.finishBinding(prof, assumed, targetNode, start, err)
 	}()
 
+	klog.Infof("schedule pod %s:%s to %s", assumed.Name, assumed.Namespace, targetNode)
 	cache.SRSend("localhost:1234", targetNode)
 	bound, err := sched.extendersBinding(assumed, targetNode)
 	if bound {
