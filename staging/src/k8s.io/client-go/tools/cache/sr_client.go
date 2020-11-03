@@ -14,7 +14,7 @@ var (
 	mu                  sync.Mutex
 	serverHostPort      string = "localhost:1234"
 	deleteNodeScheduler bool   = false
-	deletePodController bool   = false
+	deletePodController bool   = true
 )
 
 // SRSendDeleteNode sends delete node to server
@@ -30,10 +30,13 @@ func SRSendDeleteNode(node string) {
 
 // SRSendDeletePod sends detete pod to server
 func SRSendDeletePod(pod *v1.Pod) {
-	klog.Warning("[SR] delete pod")
 	mu.Lock()
 	defer mu.Unlock()
+	if pod.Namespace == "kube-system" {
+		return
+	}
 	if deletePodController {
+		klog.Warningf("[SR] prepare to delete pod %s %s", pod.Name, pod.Namespace)
 		if SRSend(serverHostPort, "[SR]\tDP\t"+pod.Name+"\t"+pod.Namespace) {
 			deletePodController = false
 		}
