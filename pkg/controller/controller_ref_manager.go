@@ -29,7 +29,6 @@ import (
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apimachinery/pkg/types"
 	utilerrors "k8s.io/apimachinery/pkg/util/errors"
-	"k8s.io/client-go/tools/cache"
 	"k8s.io/klog"
 )
 
@@ -203,7 +202,7 @@ func (m *PodControllerRefManager) ClaimPods(pods []*v1.Pod, filters ...func(*v1.
 		}
 		if ok {
 			claimed = append(claimed, pod)
-			cache.SRSendDeletePod(pod)
+			// cache.SRSendDeletePod(pod)
 		}
 	}
 	return claimed, utilerrors.NewAggregate(errlist)
