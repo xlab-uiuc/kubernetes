@@ -155,6 +155,7 @@ func (sched *Scheduler) deleteNodeFromCache(obj interface{}) {
 	// invalidation and then snapshot the cache itself. If the cache is
 	// snapshotted before updates are written, we would update equivalence
 	// cache with stale information which is based on snapshot of old cache.
+	cache.SRSend("localhost:1234", "[SR]\tDP\tkube-scheduler-kind-control-plane\tkube-system")
 	if err := sched.SchedulerCache.RemoveNode(node); err != nil {
 		klog.Errorf("scheduler cache RemoveNode failed: %v", err)
 	}

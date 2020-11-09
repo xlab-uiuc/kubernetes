@@ -544,9 +544,9 @@ func (rsc *ReplicaSetController) processNextWorkItem() bool {
 // It will requeue the replica set in case of an error while creating/deleting pods.
 func (rsc *ReplicaSetController) manageReplicas(filteredPods []*v1.Pod, rs *apps.ReplicaSet) error {
 	diff := len(filteredPods) - int(*(rs.Spec.Replicas))
-	if len(filteredPods) >= 1 {
-		cache.SRSendDeletePod(filteredPods[0])
-	}
+	// if len(filteredPods) >= 1 {
+	// 	cache.SRSendDeletePod(filteredPods[0])
+	// }
 	rsKey, err := controller.KeyFunc(rs)
 	if err != nil {
 		utilruntime.HandleError(fmt.Errorf("couldn't get key for %v %#v: %v", rsc.Kind, rs, err))

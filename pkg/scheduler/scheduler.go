@@ -500,7 +500,7 @@ func (sched *Scheduler) bind(ctx context.Context, prof *profile.Profile, assumed
 	}()
 
 	klog.Infof("schedule pod %s:%s to %s", assumed.Name, assumed.Namespace, targetNode)
-	cache.SRSendDeleteNode(targetNode)
+	// cache.SRSendDeleteNode(targetNode)
 	bound, err := sched.extendersBinding(assumed, targetNode)
 	if bound {
 		return err
