@@ -1,4 +1,4 @@
-package sr
+package staleread
 
 import (
 	"context"
@@ -59,12 +59,12 @@ var _ = SIGDescribe("Stale read test", func() {
 		}
 	})
 
-	ginkgo.It("delete kind-worker", func() {
+	framework.ConformanceIt("delete kind-worker", func() {
 		WaitForStableCluster(cs, masterNodes)
 
 		err := cs.CoreV1().Nodes().Delete(context.TODO(), "kind-worker", metav1.DeleteOptions{})
 		framework.ExpectNoError(err)
-		framework.Logf("Delete node kind-worker.\n")
+		framework.Logf("Delete node kind-worker.")
 		time.Sleep(5 * time.Second)
 
 		deployment := &apps.Deployment{
@@ -103,21 +103,21 @@ var _ = SIGDescribe("Stale read test", func() {
 			},
 		}
 		deploymentsClient := cs.AppsV1().Deployments(v1.NamespaceDefault)
+		podsClient := cs.CoreV1().Pods(v1.NamespaceDefault)
 		result, err := deploymentsClient.Create(context.TODO(), deployment, metav1.CreateOptions{})
 		framework.ExpectNoError(err)
-		framework.Logf("Created deployment %q.\n", result.GetObjectMeta().GetName())
+		framework.Logf("Created deployment %q.", result.GetObjectMeta().GetName())
 		time.Sleep(5 * time.Second)
 
-		list, err := deploymentsClient.List(context.TODO(), metav1.ListOptions{})
+		list, err := podsClient.List(context.TODO(), metav1.ListOptions{})
 		framework.ExpectNoError(err)
 		for _, d := range list.Items {
-			framework.Logf(" * %s (%d replicas)\n", d.Name, *d.Spec.Replicas)
 			framework.Logf("pod: %v", d)
 		}
 
 		derr := deploymentsClient.Delete(context.TODO(), "demo-deployment", metav1.DeleteOptions{})
 		framework.ExpectNoError(derr)
-		framework.Logf("Deleted deployment demo-deployment.\n")
+		framework.Logf("Deleted deployment demo-deployment.")
 	})
 
 })

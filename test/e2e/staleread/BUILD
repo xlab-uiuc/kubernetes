@@ -4,9 +4,9 @@ go_library(
     name = "go_default_library",
     srcs = [
         "framework.go",
-        "delete_node.go",
+        "staleread.go",
     ],
-    importpath = "k8s.io/kubernetes/test/e2e/sr",
+    importpath = "k8s.io/kubernetes/test/e2e/staleread",
     visibility = ["//visibility:public"],
     deps = [
         "//pkg/api/v1/pod:go_default_library",
