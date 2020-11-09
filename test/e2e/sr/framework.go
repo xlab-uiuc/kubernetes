@@ -6,11 +6,11 @@ import (
 	"time"
 
 	"github.com/onsi/ginkgo"
-
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/util/sets"
 	clientset "k8s.io/client-go/kubernetes"
+	podutil "k8s.io/kubernetes/pkg/api/v1/pod"
 	"k8s.io/kubernetes/test/e2e/framework"
 )
 
@@ -92,4 +92,27 @@ func getDeletingPods(c clientset.Interface, ns string) []v1.Pod {
 
 func podTerminated(p v1.Pod) bool {
 	return p.Status.Phase == v1.PodSucceeded || p.Status.Phase == v1.PodFailed
+}
+
+// GetPodsScheduled returns a number of currently scheduled and not scheduled Pods.
+func GetPodsScheduled(masterNodes sets.String, pods *v1.PodList) (scheduledPods, notScheduledPods []v1.Pod) {
+	for _, pod := range pods.Items {
+		if !masterNodes.Has(pod.Spec.NodeName) {
+			if pod.Spec.NodeName != "" {
+				_, scheduledCondition := podutil.GetPodCondition(&pod.Status, v1.PodScheduled)
+				framework.ExpectEqual(scheduledCondition != nil, true)
+				framework.ExpectEqual(scheduledCondition.Status, v1.ConditionTrue)
+				scheduledPods = append(scheduledPods, pod)
+			} else {
+				_, scheduledCondition := podutil.GetPodCondition(&pod.Status, v1.PodScheduled)
+				framework.ExpectEqual(scheduledCondition != nil, true)
+				framework.ExpectEqual(scheduledCondition.Status, v1.ConditionFalse)
+				if scheduledCondition.Reason == "Unschedulable" {
+
+					notScheduledPods = append(notScheduledPods, pod)
+				}
+			}
+		}
+	}
+	return
 }
