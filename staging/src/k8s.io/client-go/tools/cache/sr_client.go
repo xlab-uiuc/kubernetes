@@ -6,6 +6,7 @@ import (
 	"net"
 	"sync"
 
+	apps "k8s.io/api/apps/v1"
 	v1 "k8s.io/api/core/v1"
 	"k8s.io/klog"
 )
@@ -26,11 +27,22 @@ func SRSendDeleteNode(node string) {
 func SRSendDeletePod(pod *v1.Pod) {
 	mu.Lock()
 	defer mu.Unlock()
-	if pod.Namespace == "kube-system" {
+	if pod.Namespace == "kube-system" || pod.Namespace == "local-path-storage" {
 		return
 	}
 	klog.Warningf("[SR] prepare to delete pod %s %s", pod.Name, pod.Namespace)
 	SRSend(serverHostPort, "[SR]\tDP\t"+pod.Name+"\t"+pod.Namespace)
+}
+
+// SRSendDeleteRS sends detete replicaset to server
+func SRSendDeleteRS(rs *apps.ReplicaSet) {
+	mu.Lock()
+	defer mu.Unlock()
+	if rs.Namespace == "kube-system" || rs.Namespace == "local-path-storage" {
+		return
+	}
+	klog.Warningf("[SR] prepare to delete replicaset %s %s", rs.Name, rs.Namespace)
+	SRSend(serverHostPort, "[SR]\tDRS\t"+rs.Name+"\t"+rs.Namespace)
 }
 
 // SRSend sends text to server
