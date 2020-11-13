@@ -60,7 +60,8 @@ func SRSend(hostPort string, text string) bool {
 		return false
 	}
 	klog.Warningf("[SR] hear back: %s", reply)
-	if reply == "YES" {
+	if reply == "ACK" {
+		klog.Warningf("[SR] make stale successfully")
 		return true
 	}
 	return false
